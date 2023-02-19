@@ -1,0 +1,18 @@
+<?php
+
+    $pdf->StartTransform();
+    $pdf->Rotate(30);
+    if ($Aprobado=TRUE){
+        $pdf->SetTextColor(0,143,57);            
+        $pdf->SetAlpha(0.5);
+        $pdf->SetFont('', 'B', 50, '', 'false'); $pdf->Text(10, 100, ''.'APROBADO'); 
+    } else {
+        $pdf->SetTextColor(255,0,0);            
+        $pdf->SetAlpha(0.5);
+        $pdf->SetFont('', 'B', 50, '', 'false'); $pdf->Text(10, 100, ''.'RECHAZADO'); 
+    }
+    $pdf->StopTransform();
+
+
+
+?>

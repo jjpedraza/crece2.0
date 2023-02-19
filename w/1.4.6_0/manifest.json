@@ -1,0 +1,33 @@
+{
+   "action": {
+      "default_icon": {
+         "128": "icons/128.png"
+      },
+      "default_popup": "popup.html"
+   },
+   "background": {
+      "service_worker": "js/background.js"
+   },
+   "content_scripts": [ {
+      "js": [ "js/inject/content-script.js" ],
+      "matches": [ "*://*.whatsapp.com/*" ],
+      "run_at": "document_end"
+   } ],
+   "default_locale": "en",
+   "description": "__MSG_description__",
+   "homepage_url": "https://waplus.io/",
+   "host_permissions": [ "*://*.whatsapp.com/*" ],
+   "icons": {
+      "128": "icons/128.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq2o3P2qJ1hCPFJLImDT/H27pM3Ed/y8KPltNOZKKJKB3fmFyTpuMluOWjkV+7m2+OncfZ0i2/+K08icZBTJs0vMPQ+qwIhTGuvP1SMuF8vfSDw7ILSCGjb6Ovus/g0+t+KoEgmiOCPm6iKXFRsFraY8pZW2OyxjMZ1BZPG8SR/hSA/u99gA8ua5VpJ+gI90c1it7pbteo/srxiMwLQnUcbMtdSmjqG4u7T/dvmSnJoBiTrNTFp5t8ufg8+ZTBYcB7aAKqSwhY+MxrRnR+TNMOIpv1hPsWEFgovkfK12qLdXiSp2xlo/wJvLY2sSsmpS3P2+NwNAKsS1O1wKVU4ih7wIDAQAB",
+   "manifest_version": 3,
+   "name": "__MSG_name__",
+   "permissions": [ "activeTab", "storage", "unlimitedStorage" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.4.6",
+   "web_accessible_resources": [ {
+      "matches": [ "*://*.whatsapp.com/*" ],
+      "resources": [ "js/inject/inject.js", "WAPlusSenderTemplate.xlsx", "pic/crm-commend.png", "li-popup/li-popup.html" ]
+   } ]
+}
