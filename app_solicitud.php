@@ -127,9 +127,9 @@ if (isset($_GET['n'])){
 
         if ($Sol['valoracion']==''){
             
-            FormElement_input("* Fecha de Inicio: ",$Sol['fechainicio'],"", "","date","CreditoFechaInicio");
+            FormElement_input("* Fecha de Inicio: (Miercoles) ",$Sol['fechainicio'],"", "","date","CreditoFechaInicio");
         } else {
-            FormElement_input("* Fecha de Inicio: ",$Sol['fechainicio'],"", "","date","CreditoFechaInicio",TRUE );
+            FormElement_input("* Fecha de Inicio: (Miercoles) ",$Sol['fechainicio'],"", "","date","CreditoFechaInicio",TRUE );
         }
 
         FormElement_input("Grupo al que pertenece: ",$Sol['grupo'],"", "","text","",TRUE );
@@ -143,7 +143,7 @@ if (isset($_GET['n'])){
             vertical-align: top;">';
 
             echo '
-                <label for="CreditoTipo" style="font-size:8pt;">Tipo de Credito:</label>
+                <label for="CreditoTipo" style="font-size:8pt;">Tipo de Credito ('.$Sol['grupo'].') </label>
                 ';
 
             echo "<input id='CreditoTipo' class='form-control' style='font-size:9pt; margin-top:-7px;' 
@@ -283,8 +283,12 @@ if (isset($_GET['n'])){
     }
 
 
-
-        FormElement_input("Cargo Moratorio: (semanal) ",$Sol['cargoporsemana'],"", "","text","CreditoCargoPorSemana");
+if ($Sol['tipo']=="GRUPAL"){
+    FormElement_input("<b>Cargo Semanal</b>
+    (Cargo x miembros[".MiembrosDeUnGrupo($Sol['IdGrupo'])."])",$Sol['cargoporsemana'],"", "","text","CreditoCargoPorSemana");
+} else {
+    FormElement_input("Cargo Semanal",$Sol['cargoporsemana'],"", "","text","CreditoCargoPorSemana");
+}
         
         
         
@@ -328,12 +332,15 @@ if (isset($_GET['n'])){
         border-radius: 5px; background-color: #e8e8e8; width:100%;
         vertical-align: top;">';
 
-        $fotoFile = 'fotos/'.$NoSol.'_garantia.jpg';
+        $fotoFile = 'fotos/'.$NoSol.'_garantia.pdf';
         if (is_file($fotoFile)){
-            echo "<a href='".$fotoFile."' target=_blank><img name='foto' id='foto'  src='".$fotoFile."' style='width:100%; border-radius:5px;'></a>";
+            // echo "<a href='".$fotoFile."' target=_blank><img name=foto' id='foto'  src='".$fotoFile."' style='width:100%; border-radius:5px;'></a>";
+            echo "<iframe id='foto' src='".$fotoFile."' style='width:400px; height:400px; border-radius:5px;'></iframe>";
+            
 
         } else {
-            echo "<img name='foto' id='foto' src='iconos/nofoto.jpg' style='width:100%;'>";
+            echo "<iframe id='foto' src='' style='width:400px; height:400px; border-radius:5px;'></iframe>";
+            echo "Sin archivo de Garantia";
         }
 
 
@@ -341,10 +348,10 @@ if (isset($_GET['n'])){
         echo '<br>
         <table width=100%><tr><td>
             <label  style="font-size:8pt;">Archivo de la Garantia</label>
-            <form id="FormGarantia" method="POST" enctype="multipart/form-data"><input type="file" name="GarantiaFile" id="GarantiaFile" accept=".jpg" class="form-control" style="font-size:8pt;">            </form>
+            <form id="FormGarantia" method="POST" enctype="multipart/form-data"><input type="file" name="GarantiaFile" id="GarantiaFile" accept=".pdf" class="form-control" style="font-size:8pt;">            </form>
             </td><td width=30%>
             
-            <button class="btn btn-success" onclick="GuardarFoto();">Guardar Foto</button></td></tr></table>
+            <button class="btn btn-success" onclick="GuardarFoto();">Guardar Garantia</button></td></tr></table>
         </div>';
 
         echo "</td><tr></table>";
@@ -446,12 +453,22 @@ if ($Sol['valoracion']==''){
 
         echo "
 <button style='margin:5px;' class='btn btn-warning' onclick='CorridaF();'>Simular Corrida Financiera</button>
+
 <a target=_blank href='print_solicitud.php?id=".$NoSol."' style='margin:5px;' class='btn btn-primary' download='Solicitud-".$NoSol.".pdf'> 
-    <img src='iconos/pdf.png' style='width:23px; margin-top:-5px; margin-right:5px;'> Imprimir Solicitud</a>
+    <img src='iconos/pdf.png' style='width:23px; margin-top:-5px; margin-right:5px;'> 
+    
+    Solicitud
+    
+</a>
+ 
 
 
 <a target=_blank href='print_contrato.php?id=".$NoSol."' style='margin:5px;' class='btn btn-primary'  download='Pagare-".$NoSol.".pdf'> 
-    <img src='iconos/pdf.png' style='width:23px; margin-top:-5px; margin-right:5px;'> Imprimir Contrato</button>
+    <img src='iconos/pdf.png' style='width:23px; margin-top:-5px; margin-right:5px;'> Contrato</button>
+</a>
+
+<a target=_blank href='print_hojacliente.php?id=".$NoSol."' style='margin:5px;' class='btn btn-primary'  download='Pagare-".$NoSol.".pdf'> 
+    <img src='iconos/pdf.png' style='width:23px; margin-top:-5px; margin-right:5px;'> Hoja de Control</button>
 </a>
 
 
@@ -497,7 +514,7 @@ if ($Sol['valoracion']==''){
             
             // echo "<h4>Estado de Cuenta:</h4>";
 
-            echo "<div style='width:100%; text-align:right;margin:10px; margin-right:40px;'><a href='print_edocuenta.php?id=".$Sol['nosol']."' class='btn btn-secondary'>Imprimir Estado de Cuenta</a></div>";
+            echo "<div style='width:100%; text-align:right;margin:10px; margin-right:40px;'><a target=_blank href='print_edocuenta.php?id=".$Sol['nosol']."' class='btn btn-secondary'>Imprimir Estado de Cuenta</a></div>";
            
 
 
@@ -872,7 +889,7 @@ function ActualizaFoto(){
     d = new Date();    
     NoSol = '<?php echo $NoSol; ?>';
     
-    src='fotos/'+NoSol+'_garantia.jpg?';
+    src='fotos/'+NoSol+'_garantia.pdf?';
     $("#foto").attr("src",src+d.getTime());
 }
 

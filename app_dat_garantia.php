@@ -17,12 +17,12 @@ if ( 0 < $_FILES['GarantiaFile']['error'] ) {
 
 }
 else {
-    $archivofinal = 'fotos/'.$NoSol."_garantia.jpg";            
+    $archivofinal = 'fotos/'.$NoSol."_garantia.pdf";            
     // rename("fotos_vehiculos/".$IdVehiculo.".jpg", "fotos_vehiculos/".$IdVehiculo."-".MiToken_generate().".jpg");
     if (move_uploaded_file($_FILES['GarantiaFile']['tmp_name'], $archivofinal)==TRUE){
         echo '<script>ActualizaFoto();</script>';
         $archivofinal = $archivofinal."?".date ("His");
-        Toast("Se actualizo la foto de la Garantia",6,$archivofinal);
+        Toast("Se actualizo el archivo de la Garantia",6,$archivofinal);
 
         echo "<script>ActualizaFoto();</script>";
         Historia($RinteraUser,"CLIENTES","Actualizo la Foto IdCliente = ".$Curp);

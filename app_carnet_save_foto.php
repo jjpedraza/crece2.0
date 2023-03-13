@@ -13,7 +13,11 @@ $Curp  = VarClean($_POST['Curp']);
 
 if ( 0 < $_FILES['VFile']['error'] ) {
             $Err=  'Error: ' . $_FILES['VFile']['error']. '<br>';
-            Toast("Error: ".$Err,2,"");
+            if ($_FILES['VFile']['error']==4) {
+                Toast("No hay foto cargado para actualizar",2,"");
+            } else {
+                Toast("Error: ".$Err,2,"");
+            }
 
 }
 else {

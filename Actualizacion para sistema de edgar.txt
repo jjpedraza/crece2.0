@@ -1,0 +1,15 @@
+MODIFICACIONES AL SISTEMA DE EDGAR:
+- Individuales 15na dia habil L-V  OK
+
+- Si cae en Sabado o Domingo, brinca a Lunes; pero sino paga el Lunes, se le cobra el recargo * dias naturales = 60
+
+- Fechas de Pago deben ser Lunes a Miercoles, (estan saliendo en otros dias) OK
+- Despues de esas fechas 20 pesos de recargo por persona en el grupo
+
+- Si deja garantia no es necesario aval
+- Agregar la figura del conyuge, puede actuar como aval si cuenta con garantia
+- Pueden tener doble garantia
+- Aval es opcional si tiene buen historial
+n
+
+- Hoja de control de pagos para el cliente

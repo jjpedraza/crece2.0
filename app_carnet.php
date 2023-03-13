@@ -634,18 +634,6 @@ if (isset($_GET['id'])){
         
         </div>';
 
-        
-        echo '
-        <div class="form-group col-sm">               
-        <button style="font-size:14pt;"  class="btn btn-success" onclick="CrearSolicitud();">
-        
-        <table width=100%><tr><td><img src="iconos/cuentaindividual.png" style="widt:28px"></td>
-        <td><b>Crear </b><br>solicitud individual</button></td></tr></table>
-        
-        </button>
-        </div>
-
-       ';
        
         echo "
         <hr>
@@ -659,7 +647,11 @@ if (isset($_GET['id'])){
             echo '
           
             <div class="form-group col-sm">
-                <label for="exampleFormControlInput1">Grupo</label>
+                <label for="exampleFormControlInput1">
+                <a href="app_grupos.php" target=_blank title="Clic aqui para ver los grupos">
+                Grupo
+                </a>
+                </label>
                 <select name="grupo" id="grupo" class="form-control bg-warning">
                 ';
                 
@@ -736,9 +728,8 @@ if (isset($_GET['id'])){
            
 
             <div class="form-group col-sm">               
-            <button style="font-size:14pt;"  class="btn btn-success" onclick="CrearSolicitud_grupo();">
-            <table width=100%><tr><td><img src="iconos/cuentagrupal.png" style="widt:28px"></td>
-            <td><b>Crear </b><br>solicitud Grupal</button></td></tr></table>
+            
+
             </div>';
 
        
@@ -752,23 +743,32 @@ if (isset($_GET['id'])){
             
         echo "
         <br><br>
-        <div class='row' style='
-        background-color:#ddd; padding:10px;
-
+        <div class='' style='text-align:center;       
             '>"; // ---------------------------------------- r  o  w --- begin
      
 
-            echo '<br>
-            <div class="form-group col-sm">               
-               <button  style="font-size:14pt;" class="btn btn-success" onclick="Guardar();">Guardar </button>
-            </div>';
+            echo '
+            
+               <button  style="font-size:14pt;" class="Mbtn btn-Primary" onclick="Guardar();">Guardar </button>
+            ';
 
 
             echo '
-            <div class="form-group col-sm">               
-               <a  style="font-size:14pt;" class="btn btn-primary" href="print_carnet.php?id='.$_GET['id'].'">Imprimir Registro </a>
-            </div>';
+            
+               <a  style="font-size:14pt;" class="Mbtn btn-Default" href="print_carnet.php?id='.$_GET['id'].'">Imprimir Registro </a>
+            ';
+            
+            echo '
+            
+            <button   class="Mbtn btn-Default" onclick="CrearSolicitud();">        
+                Solicitud Individual
+            </button>
 
+
+            <button   class="Mbtn btn-Default" onclick="CrearSolicitud_grupo();">
+                Solicitud Grupal (Guarde antes)
+            </button>
+        ';
           
            
        echo "</div>"; // ---------------------------------------- r  o  w --- end   
@@ -1040,6 +1040,7 @@ function Guardar(){
                 },
                 success: function(data) {
                     $('#R').html(data);
+                    GuardarFoto();
                     $('#PreLoader').hide();
                 }
             });
@@ -1074,6 +1075,7 @@ function GuardarFoto(){
 
 
 function CrearSolicitud(){
+    Guardar();
     IdCliente = '<?php echo VarClean($_GET['id']); ?>';  
     IdSucursal = '<?php echo $IdSucursal ?>';  
     IdGrupo = $('#grupo').val();
@@ -1094,6 +1096,7 @@ function CrearSolicitud(){
 }
 
 function CrearSolicitud_grupo(){
+    Guardar();
     IdCliente = '<?php echo VarClean($_GET['id']); ?>';  
     IdSucursal = '<?php echo $IdSucursal ?>';  
     IdGrupo = $('#grupo').val();

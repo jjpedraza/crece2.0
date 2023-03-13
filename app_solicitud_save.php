@@ -18,11 +18,25 @@ $CreditoFormaDePago = VarClean($_POST['CreditoFormaDePago']);
 $CreditoTasaInteres = VarClean($_POST['CreditoTasaInteres']);
 $CreditoTasaMoratorio = VarClean($_POST['CreditoTasaMoratorio']);
 $CreditoCargoPorSemana = VarClean($_POST['CreditoCargoPorSemana']);
+$CreditoCargoPorSemana_indi = $CreditoCargoPorSemana;
+$IdGrupo = Cliente_IdGrupo($ClienteCurp);
+$Miembros = MiembrosDeUnGrupo($IdGrupo);
+if ($CreditoTipo=="GRUPAL"){
+   $CreditoCargoPorSemana = $CreditoCargoPorSemana_indi * $Miembros;
+}
+
 $CreditoGarantia = VarClean($_POST['CreditoGarantia']);
 $CreditoValoracion = VarClean($_POST['CreditoValoracion']);
 $CreditoComentarios = VarClean($_POST['CreditoComentarios']);
 $CreditoFechaContrato = VarClean($_POST['CreditoFechaContrato']);
 $CreditoFechaInicio = VarClean($_POST['CreditoFechaInicio']);
+
+echo "Inicio".$CreditoFechaInicio."|";
+echo "Contrato".$CreditoFechaContrato;
+
+if (validar_fechadeinicio($CreditoFechaInicio, $CreditoFechaContrato)) {
+    echo "La fecha {$CreditoFechaInicio} es un lunes, martes o miércoles";
+
 $CreditoIvaTipo = VarClean($_POST['CreditoIvaTipo']);
 $IdSeguro = VarClean($_POST['IdSeguro']);
 $SeguroCosto = Seguros_Costo($IdSeguro);
@@ -39,6 +53,7 @@ if (Valoracion($NoSol)=="APROBADO") {
    $sql = "UPDATE cuentas SET
    garantia = '".$CreditoGarantia."',
    cargoporsemana = '".$CreditoCargoPorSemana."',
+   cargoporsemana_indi = '".$CreditoCargoPorSemana_indi."',
    comentario='".$CreditoComentarios."'
    WHERE nosol = '".$NoSol."'
    ";
@@ -86,6 +101,7 @@ if (Valoracion($NoSol)=="APROBADO") {
       $sql = "UPDATE cuentas SET
       garantia = '".$CreditoGarantia."',
       cargoporsemana = '".$CreditoCargoPorSemana."',
+      cargoporsemana_indi = '".$CreditoCargoPorSemana_indi."',
       tipo='".$CreditoTipo."',
       cantidad='".$CreditoCantidad."',
       plazo ='".$CreditoPlazo."',
@@ -183,27 +199,30 @@ if (Valoracion($NoSol)=="APROBADO") {
                // echo "<th>Total</th>";
                $nOK=0;
                $msgT = "";
+               $n=1;
                while($n<=$NPlazo){
-                  if ($n==1){ // si es el primer pago es la fecha del contrato
+                  if ($n<=1){ // si es el primer pago es la fecha del contrato
                      // $FechaSig = $CreditoFechaContrato;
                      $FechaSig = $CreditoFechaInicio;
 
                   } else {
-                     $FechaSig = date('Y-m-d', strtotime("$FechaSig + ".$CreditoFormaDePago."day"));
+                     // $FechaSig = date('Y-m-d', strtotime("$FechaSig + ".$CreditoFormaDePago."day"));
+                     $FechaSig = EncuentraMiercoles($FechaSig, $CreditoFormaDePago);
                   }
                   
-                  if (dia($FechaSig) == "Sabado"){
-                     $FechaSig = date('Y-m-d', strtotime("$FechaSig + 2day"));
 
-                  }
+                  // if (dia($FechaSig) == "Sabado"){
+                  //    $FechaSig = date('Y-m-d', strtotime("$FechaSig + 2day"));
 
-                  if (dia($FechaSig) == "Domingo"){
-                     $FechaSig = date('Y-m-d', strtotime("$FechaSig + 1day"));
-                  }
+                  // }
+
+                  // if (dia($FechaSig) == "Domingo"){
+                  //    $FechaSig = date('Y-m-d', strtotime("$FechaSig + 1day"));
+                  // }
 
                   // echo "<tr>";
                   $ffin=$FechaSig;
-                  $finicio = date('Y-m-d', strtotime("$FechaSig - 3day"));
+                  $finicio = date('Y-m-d', strtotime("$FechaSig - 2day"));
           
 
                   $sqlIn = "INSERT INTO tabladepagos
@@ -297,6 +316,7 @@ if (Valoracion($NoSol)=="APROBADO") {
    $sql = "UPDATE cuentas SET
       garantia = '".$CreditoGarantia."',
       cargoporsemana = '".$CreditoCargoPorSemana."',
+      cargoporsemana_indi = '".$CreditoCargoPorSemana_indi."',
       tipo='".$CreditoTipo."',
       cantidad='".$CreditoCantidad."',
       plazo ='".$CreditoPlazo."',
@@ -324,6 +344,12 @@ if (Valoracion($NoSol)=="APROBADO") {
    Toast("ERROR al guardar",2,"");
 }
 }
+
+} else {
+   echo "La fecha {$CreditoFechaInicio} NO es un Miercoles";
+   Toast("La fecha de inicio {$CreditoFechaInicio} Debe ser un Miercoles y debe ser Mayor que la de Contrato",2,"");
+}
+
 ?>
 
 <?php

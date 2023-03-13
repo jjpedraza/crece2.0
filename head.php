@@ -120,12 +120,31 @@ require ("components.php");
 <link rel="shortcut icon" href="favicon.ico">
 <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
 </head>
+
+
 <body style="
 background-color: <?php echo Preference("ColorDeFondo", "", ""); ?>;
 text-align:center;
 ">
 <?php
 // Init();
+
+
+
+// Obtener la fecha actual
+$hoy = date("Y-m-d");
+
+// Fecha límite de la demostración (debe estar en formato yyyy-mm-dd)
+$FechaDemoFin = "2023-04-15";
+
+// Verificar si la fecha actual es posterior a la fecha límite de la demostración
+if ($hoy > $FechaDemoFin) {
+    // Mostrar el div semitransparente
+    echo "<div style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 9999;'><p style='position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;'>Fin del periodo de demostración</p></div>";
+}
+
+
+
 ?>
 
 <div id='PreLoader' style='

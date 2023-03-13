@@ -8,7 +8,16 @@ if (isset($_GET['id'])){
 
     if ($NoSol <> ''){
         Historia($RinteraUser, "PRINT", "Descargo la solicitud NoSol=".$NoSol."");
-        $sql = "select * from solicitudes where nosol='".$NoSol."'";
+        $sql = "select * from solicitudes where nosol='".$NoSol."'
+        AND COALESCE(valoracion, '') <> ''
+        AND fechacontrato IS NOT NULL
+        AND fechainicio IS NOT NULL
+        AND COALESCE(cantidad, 0) <> 0
+        AND plazo IS NOT NULL
+        AND formadepago IS NOT NULL
+        AND COALESCE(tasa_interes, 0) <> 0
+        AND COALESCE(cargoporsemana, 0) <> 0;
+        ";
         $r = $db1->query($sql);        
             if ($db1->query($sql) == TRUE){
                 if($Sol = $r -> fetch_array()) {
@@ -370,8 +379,31 @@ if (isset($_GET['id'])){
 
                         } else {echo "ERROR: Cliente no encontrado";}
                     } else {echo "ERROR: Informacion de Cliente no disponible";}
-                } else { echo "ERROR; Sin Informacion";}
-            }else { echo "ERROR; Sin Informacion bd";}  
+                } else { 
+                    echo "ERROR; Solicitud no disponible, Inexistente o le falta capturar informacion en:
+                        los siguientes campos: <br>
+                        - valoracion <br>
+                        - fechacontrato <br>
+                        - fechainicio <br>
+                        - cantidad <br>
+                        - plazo <br>
+                        - formadepago <br>
+                        - tasa_interes <br>
+                        - cargoporsemana <br>
+                        ";
+                
+                }
+            }else { echo "ERROR; Solicitud no disponible, Inexistente o le falta capturar informacion en:
+                los siguientes campos: <br>
+                - valoracion <br>
+                - fechacontrato <br>
+                - fechainicio <br>
+                - cantidad <br>
+                - plazo <br>
+                - formadepago <br>
+                - tasa_interes <br>
+                - cargoporsemana <br>
+                ";}  
     }else { echo "ERROR; Parametros incompletos";}
 } else { echo "ERROR; Parametros no definidos";}
 

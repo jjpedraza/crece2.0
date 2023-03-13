@@ -14,11 +14,20 @@ $no_sol = NoSol_generar($IdSucursal);
 
 // Toast($no_sol,0,"");
 
+
 $Curp  = VarClean($_POST['IdCliente']);
 // $IdGrupo = Cliente_IdGrupo($Curp);
+
 $IdGrupo = VarClean($_POST['IdGrupo']);
+if ($IdGrupo=="") {
+    Toast("Para crear un contrato grupal, seleccione un grupo y un cargo",2,"");
+} else {
+
 $Cargo = $_POST['Cargo'];
-var_dump($_POST['Cargo']);
+var_dump($_POST['Cargo']); 
+
+
+
 
 $CuentasActivas = Grupo_CuentasActivas($IdGrupo);
 // $Cargo = Cliente_Grupo_cargo($Curp);
@@ -36,6 +45,37 @@ if ($CuentasActivas > 0){
 } else {
     //2.- Que el que solicite sea presidente (Se entiende como representante Legal del grupo)
     Toast("Cargo".$Cargo,"",1);
+    
+    $sqlp="select count(*) as n from clientes where IdGrupo='".$IdGrupo."' and grupo_cargo='PRESIDENTE' and curp<>'".$Curp."'";
+    
+    $rp= $db1 -> query($sqlp);    
+    if($fp = $rp -> fetch_array())
+    { 
+        if ($fp['n']==0){//No hay presidente            
+            
+        } else {//Hay alguien como presidente
+            //Limpiamos primero al presidente existente
+            $sqlup="UPDATE clientes SET grupo_cargo='' WHERE IdGrupo='".$IdGrupo."'";            
+            if ($db1->query($sqlup) == TRUE){
+                Toast("Se elimino de como presidente a otro miembro del grupo");
+            }
+            
+
+        }
+        $sqlup="UPDATE clientes SET grupo_cargo='PRESIDENTE' WHERE curp='".$Curp."' and IdGrupo='".$IdGrupo."'";        
+        if ($db1->query($sqlup) == TRUE) {
+            Toast("Se actualizo como PRESIDENTE",4,"");
+        } else {
+            Toast("ERROR: al actualizar como PRESIDENTE al presente cliente",2,"");
+            $Cargo = ""; //Para que no pueda continuar
+        }
+            
+    } 
+    unset($fp,$rp);
+
+
+
+
     var_dump($Cargo);
     if ($Cargo == 'PRESIDENTE'){                   
         $sql="
@@ -70,7 +110,7 @@ if ($CuentasActivas > 0){
 }
 unset($Curp, $sql);
 
-
+} //si IdGrupo=""
 ?>
 
 <?php

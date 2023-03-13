@@ -1274,4 +1274,141 @@ function RepresentanteLegal($IdSucursal){
 }
 
 
+function es_lunes_martes_miercoles($fecha) {
+    // Definimos los días de la semana en ambos idiomas
+    $dias_semana = array(
+        'es' => array('lunes', 'martes', 'miércoles'),
+        'en' => array('monday', 'tuesday', 'wednesday')
+    );
+    // Convertimos la fecha a su día de la semana en el idioma correspondiente
+    $dia_semana_fecha = strtolower(date('l', strtotime($fecha)));
+    // Detectamos automáticamente el idioma de la fecha
+    $idioma = in_array($dia_semana_fecha, $dias_semana['es']) ? 'es' : 'en';
+    // Verificamos si el día de la semana está en el arreglo correspondiente al idioma
+    $dia_valido = in_array($dia_semana_fecha, $dias_semana[$idioma]);
+    return $dia_valido;
+}
+
+
+
+function es_lunes($fecha) {
+    // Convertimos la fecha a su día de la semana como un número (1 para lunes, 2 para martes, etc.)
+    $dia_semana_fecha = date('N', strtotime($fecha));
+    // Verificamos si el día de la semana es lunes
+    $es_lunes = ($dia_semana_fecha == 1);
+    return $es_lunes;
+}
+
+function es_miercoles($fecha) {
+    // Convertimos la fecha a su día de la semana como un número (1 para lunes, 2 para martes, etc.)
+    $dia_semana_fecha = date('N', strtotime($fecha));
+    // Verificamos si el día de la semana es miércoles
+    $es_miercoles = ($dia_semana_fecha == 3);
+    return $es_miercoles;
+}
+
+function validar_fechadeinicio($FechaDeInicio, $CreditoFechaContrato) {
+    // Validar que la fecha sea mayor que $CreditoFechaContrato
+    if (strtotime($FechaDeInicio) <= strtotime($CreditoFechaContrato)) {
+        return false;
+    }
+    // Validar que la fecha sea un lunes
+    if (!es_miercoles($FechaDeInicio)) {
+        return false;
+    }
+    // Si pasó todas las validaciones, la fecha es válida
+    return true;
+}
+
+
+function idgrupo($nosol){
+    require("rintera-config.php");   
+    $sql = "select * from historial_contrato WHERE nosol='".$nosol."'";        
+    $rc= $db1 -> query($sql);    
+    if($f = $rc -> fetch_array())
+    { 
+            return $f['idgrupo'];
+        
+    } else { return'';}
+    
+        
+}
+
+
+
+function InfoGrupo_html($idgrupo){
+require("rintera-config.php");
+$sql="select c.IdGrupo,
+(select Grupo from grupos where IdGrupo = c.IdGrupo) as Grupo,
+c.grupo_cargo, c.curp, nombre
+
+
+from clientes c 
+where IdGrupo='".$idgrupo."'";
+
+
+
+
+$r= $db1 -> query($sql);
+$html ='<table width=100%>';
+$titulo='';
+while($f = $r -> fetch_array()) {      
+    $titulo = $f['Grupo'];
+    $html.='<tr>';
+    $html.='<td>'.$f['nombre'].'</td><td>'.$f['grupo_cargo'].'</td><td>'.$f['curp'].'</td>';
+    $html.='</tr>';
+
+}
+$html.='</table>';
+$final = '<h1> Grupo:'.$titulo.' ['.$idgrupo.']</h1><br>'.$html;
+
+return $final;
+}
+
+function FechaLarga($fecha) {
+    $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+
+    $fecha_unix = strtotime($fecha);
+    $dia_semana = date('w', $fecha_unix);
+    $dia_mes = date('d', $fecha_unix);
+    $mes = date('n', $fecha_unix);
+    $anio = date('Y', $fecha_unix);
+
+    $fecha_larga = $dias[$dia_semana]." ".$dia_mes." de ".$meses[$mes-1]. " del ".$anio;
+
+    return $fecha_larga;
+}
+
+function EncuentraMiercoles($fecha, $sumadias) {
+    $fecha_unix = strtotime($fecha);
+    $dia_semana = date('w', $fecha_unix);
+    $dias_para_miercoles = 3 - $dia_semana;
+    if ($dias_para_miercoles < 0) {
+        $dias_para_miercoles += 7;
+    }
+    $fecha_miercoles = strtotime("+".$dias_para_miercoles." days", $fecha_unix);
+    $fecha_sumada = strtotime("+".$sumadias." days", $fecha_miercoles);
+    $dia_semana_sumado = date('w', $fecha_sumada);
+    $dias_para_miercoles_sumado = 3 - $dia_semana_sumado;
+    if ($dias_para_miercoles_sumado < 0) {
+        $dias_para_miercoles_sumado += 7;
+    }
+    $fecha_proximo_miercoles = strtotime("+".$dias_para_miercoles_sumado." days", $fecha_sumada);
+    return date('Y-m-d', $fecha_proximo_miercoles);
+}
+
+
+function MiembrosDeUnGrupo($IdGrupo){
+    require("rintera-config.php");    
+    $sql = "select count(*) as miembros from gruposinfo where IdGrupo='".$IdGrupo."'";
+    // echo $sql;
+    $rc= $db1 -> query($sql);    
+    if($f = $rc -> fetch_array())
+    { 
+        return $f['miembros'];
+    } else { return 0;}
+
+}
+
 ?>

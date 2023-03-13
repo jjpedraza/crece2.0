@@ -172,6 +172,15 @@ if (isset($_GET['id'])){
         $htmlPDF.= '</table>';
 
 
+        $idgrupo = idgrupo($NoSol);
+        if ($idgrupo == '') {
+            $htmlPDF.='<br>Este contrato es de tipo INDIVIDUAL';
+        } else {
+            $infogrupo = InfoGrupo_html($idgrupo);
+            $htmlPDF.='<br><br>Este contrato es de tipo Grupal:<br>'.$infogrupo;
+
+
+        }
 
 
             //Texto con coordenadas
